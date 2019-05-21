@@ -1,0 +1,5 @@
+F2: tensor(0.0836, device='cuda:0')
+acc: tensor(0.8746, device='cuda:0', dtype=torch.float64)
+loss: 0.2665565892389189
+pre: tensor(0.1006, device='cuda:0')
+re: tensor(0.0820, device='cuda:0')

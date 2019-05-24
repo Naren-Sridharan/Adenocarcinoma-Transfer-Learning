@@ -114,7 +114,6 @@ def vgg16_bn(pretrained=False, **kwargs):
         model.load_state_dict(model_zoo.load_url(model_urls['vgg16_bn']))
     return model
 
-#plotting images in a grid 
 def plot_kernels(tensor, num_cols=8):
     num_kernels = tensor.shape[0]
     num_rows = 1 + num_kernels // num_cols
@@ -132,11 +131,9 @@ def plot_kernels(tensor, num_cols=8):
 ######################################################################################################################################
 ######################################################################################################################################
 
-#options
 parser = argparse.ArgumentParser(description='Visualize weights of VGG model using Visdom.')
 parser.add_argument('model_name', metavar='model-name', help='Names of dataset on which model was trained. It will be used as suffix for model directory.', type=str)
 parser.add_argument('model_dir', metavar='model-dir', help='Directory where model for dataset is to be found.', type=str)
-parser.add_argument('data_dir', metavar='data-dir', help='Directory where dataset is to be found.', type=str)
 parser.add_argument('--batchnorm', help='Whether Batch Normalization was used.', action='store_true')
 parser.add_argument('--metrics', help='Whether Metrics should be displayed.', action='store_true')
 parser.add_argument('--visualize', help='Whether to visualize', action='store_true')
@@ -144,24 +141,19 @@ parser.add_argument('-l', '--layer', help='Relu Layer number. Default 0. choices
 parser.add_argument('-f', '--filter', help='Filter number. Default 0.', nargs='?', type=int, const=0, default=0)
 args = parser.parse_args()
 
-#check model directory exists
 if not isdir(join(args.model_dir, args.model_name)):
     raise Exception('Given model directory does not exist')
 
 model_dir = join(args.model_dir, args.model_name)
-data_dir = args.data_dir
 
-#if --metrics is given, plot metrics in form of graph plots
 if args.metrics:
     vis = visdom.Visdom(server='http://10.4.16.22', env="metrics")
     metrics = {'tr': dict(), 'vl': dict()}
     names = set()
     print(listdir(model_dir))
-    #obtain result files from model directories
     files = [x for x in listdir(model_dir) if x.startswith('vgg-tr-') or x.startswith('vgg-vl-')]
     print(files)
     for metric in files:
-        #get data for each different metric
         name = metric.split('-')[-1].split('.')[0]
         phase = metric.split('-')[-2]
         names.add(name)
@@ -169,7 +161,6 @@ if args.metrics:
         y = [float(value if not value.startswith('tensor') else value.split('(')[1].split(',')[0]) for value in open(file)]
         x = [x for x in range(len(y))]
         metrics[phase][name] = {'x': x, 'y': y}
-    # one graph for each metric with 2 phases, training and validation
     for name in names:
         for phase in metrics.keys():
             if name in metrics[phase]:
@@ -183,7 +174,6 @@ if args.metrics:
 
 ######################################################################################################################################
 # GPU and Creating Model
-#visualize model layers and filters
 if args.visualize:
     class Vgg16(torch.nn.Module):
         def __init__(self, model):
@@ -212,20 +202,18 @@ if args.visualize:
     model = Vgg16(model_conv.module.double())
     print(model)
 
-    #initialize server
     vis = visdom.Visdom(server='http://10.4.16.22')
-    #get outputs of cancer and normal image in relus[cacner] and relus[normal]
+
     img = None
     relus = dict()
     for x in ['cancer', 'normal']:
-    	img = Image.open(join(data_dir, x, listdir(join(data_dir, x))[0])).resize((224,224))
+    	img = Image.open('../input_images/' + ('lung' if args.model_name.startswith('lung') else 'prostate') + '_' + x + '_01.jpg').resize((224,224))
     	vis.image(np.rollaxis(np.array(img), 2, 0), opts={'title': x})
     	inp = np.ndarray((1, 3, 224, 224), dtype=np.double)
     	inp[0] = np.rollaxis(np.array(img), 2, 0)
     	relus[x] = model(torch.from_numpy(inp))
 
     plot = dict()
-    
     # Properties window
     properties = [
         {'type': 'select', 'name': 'Block', 'value': 0, 'values': [0, 1, 2, 3, 4]},
@@ -244,7 +232,6 @@ if args.visualize:
 
     vis.register_event_handler(properties_callback, properties_window)
 
-    #vizualization function for displying filters, filter outputs, and output of specific filter
     def visualize(block_num, filter_num):
         layer = list([2, 7, 14, 21, 28])[block_num]
         print('found layer')

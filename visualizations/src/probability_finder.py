@@ -149,7 +149,7 @@ def fbeta_score(y_true, y_pred, beta, eps=1e-9):
 ######################################################################################################################################
 ######################################################################################################################################
 
-parser = argparse.ArgumentParser(description='Tests existing model against a test dataset. It also stores logs of the test in the given log_dir.')
+parser = argparse.ArgumentParser(description='Finds probability of each patch in the dataset and stores it in a pickle file with each entry having a slide_name under which all of the slide\'s patches are stored with x position, y position and probability')
 parser.add_argument('model_name', metavar='model-name', help='Names of dataset on which model was trained. Will be used as suffix for data and log directories.', type=str)
 parser.add_argument('test_name', metavar='test-name', help='Names of datasets, comma separated without blank spaces. Will be used as suffix for the log directory where the model should be.', type=str)
 parser.add_argument('data_dir', metavar='data-dir', help='Path to data directory where dataset folders are present.', type=str)

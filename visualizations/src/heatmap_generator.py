@@ -15,7 +15,7 @@ import numpy as np
 core_count = multiprocessing.cpu_count()
 
 #options
-parser = argparse.ArgumentParser(description='Extracts patches of from the highest magnification(level 0) of the svs images in the  data_directory/slides/ containing .svs files only')
+parser = argparse.ArgumentParser(description='Uses probabilities found by probability_finder.py to generate probability heat map fpr WSIs')
 parser.add_argument('data_path', metavar='data-path', help='Path to data directory where slide images are present', type=str)
 parser.add_argument('model_dir', metavar='model-dir', help='Path to model directory to obtain probability.pickle', type=str)
 parser.add_argument('-p', '--patch-size', help='Default value is 512. Other choices are 256 and 1024. ', nargs='?', type=int, const=512, default=512, choices=[256, 512, 1024])

@@ -48,7 +48,7 @@ def generate_smooth_grad(Backprop, prep_img, target_class, param_n, param_sigma_
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Visualize Guided GradCam using Visdom.')
+    parser = argparse.ArgumentParser(description='Visualize Smooth gradient based backprop using Visdom.')
     parser.add_argument('model_dir', metavar='model-dir', help='Directory where model for dataset is to be found.', type=str, const=None, default=None)
     parser.add_argument('--batchnorm', help='Whether Batch Normalization was used.', action='store_true')
     parser.add_argument('-s', '--server', help='Server address. Default http://10.4.16.22 (i.e. node13).', nargs='?', type=str, const="http://10.4.16.22", default="http://10.4.16.22")
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     # change the parametre in generate_smooth_grad
 
     param_n = 50
-    param_sigma_multiplier = 4
+    param_sigma_multiplier = 3
     smooth_grad = generate_smooth_grad(VBP,  # ^This parameter
                                        prep_img,
                                        target_class,

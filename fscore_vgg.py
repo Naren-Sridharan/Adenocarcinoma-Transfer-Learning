@@ -123,7 +123,7 @@ def vgg16_bn(pretrained=False, **kwargs):
 #enable slack and provide app token
 slack_enabled = True
 try:
-    slack_token = 'xoxp-334353176721-490886077219-615006917143-46395d5a71b71520b754b6b7cafee48b'
+    slack_token = '#SLACKTOKEN'
     sc = SlackClient(slack_token)
     print('Slack Progress Notifier Enabled.')
 except:
@@ -135,7 +135,7 @@ def update(message):
         sc.api_call(
           "chat.postMessage",
           #give channel id for slack bot
-          channel='UEES2296F',
+          channel='SLACK_CHANNEL',
           text=message,
         )
 ######################################################################################################################################
